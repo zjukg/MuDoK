@@ -1,0 +1,40 @@
+optimizer:
+  name: adam
+  lr: 1.0e-3
+  weight_decay: 0
+
+train:
+  epoch: 150
+  batch_size: 4096
+  save_model: true
+  loss: pairwise
+  test_step: 10
+  reproducible: true
+  seed: 2023
+  patience: 5
+  kg_path: ../dataset/Amazon/KG.pkl
+  pretrain_config: ../save/Amazon-LR0.0003-MU0.01-Temp0.1
+  checkpoint: epoch-5
+
+test:
+  metrics: [recall, ndcg, mrr] # choose in {ndcg, recall, precision, mrr}
+  k: [5, 10, 20, 40, 100] # top-k
+  batch_size: 1024 # How many users per batch during validation
+
+data:
+  type: general_cf
+  name: amazon_music
+
+
+model:
+  name: gccf_pt
+  keep_rate: 0.8
+  embedding_size: 32
+  layer_num: 2
+  reg_weight: 1.0e-6
+
+tune:
+  enable: false # Whether to enable grid search to search for optimal hyperparameters
+  hyperparameters: [layer_num, reg_weight] # The name of the hyperparameter
+  layer_num: [2, 3] # Use a list to store the search range
+  reg_weight: [1.0e-6, 1.0e-7, 1.0e-8]

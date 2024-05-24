@@ -1,0 +1,1 @@
+nohup python main.py --model dccf_douban_movie_pt --cuda 0 > dccf_douban_movie_pt.txt &

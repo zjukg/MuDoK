@@ -1,0 +1,42 @@
+optimizer:
+  name: adam
+  lr: 1.0e-3 # not 1e-3
+  weight_decay: 0
+
+train:
+  epoch: 500
+  batch_size: 4096
+  save_model: false
+  loss: pairwise # bpr
+  log_loss: false # whether to log loss
+  test_step: 3 # evaluate per {test_step} epochs
+  patience: 5
+  reproducible: true
+  seed: 2023
+  kg_path: ../dataset/Amazon/KG.pkl
+  pretrain_config: ../save/Amazon-LR0.0003-MU0.01-Temp0.1
+  checkpoint: epoch-5
+  #pretrain_path: ./checkpoint/xxxx.pth
+
+test:
+  metrics: [recall, ndcg, mrr] # choose in {ndcg, recall, precision, mrr}
+  k: [5, 10, 20, 50, 100] # top-k
+  batch_size: 1024 # How many users per batch during validation
+
+data:
+  type: general_cf # choose in {general_cf, multi_behavior, sequential, social}
+  name: amazon_music
+
+
+model:
+  name: ncf_pt # case-insensitive
+  keep_rate: 0.5
+  layer_num: 2
+  reg_weight: 1.0e-9
+  embedding_size: 32
+
+tune:
+  enable: true # Whether to enable grid search to search for optimal hyperparameters
+  hyperparameters: [reg_weight, lr] # The name of the hyperparameter
+  lr: [1.0e-3, 1.0e-4, 1.0e-5]
+  reg_weight: [1.0e-8, 1.0e-9]

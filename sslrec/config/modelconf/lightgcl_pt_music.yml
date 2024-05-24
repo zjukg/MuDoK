@@ -1,0 +1,44 @@
+optimizer:
+  name: adam
+  lr: 2.0e-3
+  weight_decay: 0
+
+train:
+  epoch: 200
+  batch_size: 4096
+  save_model: false
+  loss: pairwise
+  log_loss: false
+  test_step: 3
+  patience: 8
+  reproducible: true
+  seed: 2023
+  kg_path: ../dataset/Amazon/KG.pkl
+  # pretrain_config: ../save/Amazon-LR0.0003-MU0.01-Temp0.5
+  pretrain_config: ../save/Amazon13-LR0.0003-MU0.1-Temp0.1-MAXLEN-8
+  checkpoint: epoch-5
+
+test:
+  metrics: [recall, ndcg, mrr] # choose in {ndcg, recall, precision, mrr}
+  k: [5, 10, 20, 40, 100] # top-k
+  batch_size: 1024
+
+data:
+  type: general_cf
+  name: amazon_music
+
+model:
+  name: lightgcl_pt
+  dropout: 0
+  layer_num: 2
+  cl_weight: 0.1
+  reg_weight: 1.0e-9
+  temp: 0.1
+  embedding_size: 32
+  svd_q: 5
+
+tune:
+  enable: false
+  hyperparameters: [cl_weight, lr]
+  cl_weight: [0.1, 0.01]
+  lr: [1.0e-3, 2.0e-3]
